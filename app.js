@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser')
 /*ESTO NOS PERMITIRA USAR CONSTANTES ESPECIFICAS DE ARCHIVO .ENV */
 require('dotenv/config')
+/*CON ESTA LIBRERIA PODEMOS REGISTRAR LAS SOLICITUDES HTTPS */
+const morgan = require('morgan')
 
 /*AQUI LLAMAMOS A LA CONSTANTE*/
 const api=process.env.API_URL;
@@ -12,6 +14,7 @@ const api=process.env.API_URL;
 /*CUANDNO EL FRONT END ENVIE UN OBJETO JSON NECESITAMOS QUE EL BACKEND ENTIENDA ENTIENDA ESTE JSON  */
 
 app.use(bodyParser.json());
+app.use(morgan('tiny'))
 
 
 /*USAREMOS BACKTICKS PARA COMBINAR MEJOR EL TEXTO CON OBJETOS YA QUE,
