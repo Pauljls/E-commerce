@@ -5,6 +5,9 @@ const bodyParser = require('body-parser')
 require('dotenv/config')
 /*CON ESTA LIBRERIA PODEMOS REGISTRAR LAS SOLICITUDES HTTPS */
 const morgan = require('morgan')
+/*CONEXION CON LA ABSE DE DATOS */
+const mongoose = require('mongoose')
+
 
 /*AQUI LLAMAMOS A LA CONSTANTE*/
 const api=process.env.API_URL;
@@ -35,6 +38,14 @@ app.post(`${api}/products`,(req,res)=>{
     res.send(newProduct)
 })
 
+/*NORMALMENTE LA CONEXION CON LA BASE DE DATOS SE HACE ANTES DE ABRIR EL SERVER */
+mongoose.connect(process.env.CONNECTION_STRING)
+.then(()=>{
+    console.log("La conexion a la base de datos esta funcionando")
+})
+.catch((err)=>{
+    console.log(err);
+})
 //WE SPECIFY 3000 AS A PORT AND THE THE PROCESS THAT WE WANT TO DO
 app.listen(3000,()=>{
     console.log(api)
