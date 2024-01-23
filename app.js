@@ -7,7 +7,7 @@ require('dotenv/config')
 const morgan = require('morgan')
 /*CONEXION CON LA ABSE DE DATOS */
 const mongoose = require('mongoose')
-
+/*UNA COLECCION EN MONGODB ES LO MISMO QUE UN MODELO EN MONGOOSE */
 
 /*AQUI LLAMAMOS A LA CONSTANTE*/
 const api=process.env.API_URL;
@@ -19,23 +19,50 @@ const api=process.env.API_URL;
 app.use(bodyParser.json());
 app.use(morgan('tiny'))
 
+//PARA CREAR UN MODELO NECESITAMOS CREAR EL ESQUEMA
+const productSchema = mongoose.Schema({
+    name : String,
+    image: String,
+    //SI QUEREMOS AHCER UN ITEM REQUERIDO O DE LLENADO OBLIGATORIO
+    //SERA DE LA SIGUIENTE MANERA
+    countInStock : {
+        type : Number,
+        required : true
+    }
+})
+
+//LOS MODELOS SIEMPRE SE ESCRIBEN CON LETRA CAPITAL
+//EN ESTE PASO SE NOMBRA LA COLECCION Y LE ASIGNAMOS EL ESQUEMA
+const Product = mongoose.model('Product',productSchema);
 
 /*USAREMOS BACKTICKS PARA COMBINAR MEJOR EL TEXTO CON OBJETOS YA QUE,
 NECESITAMOS QUE ESTO SEA DINAMICO */
-app.get(`${api}/products`,(req,res)=>{
-    const product= {
-        id: 1,
-        name: 'hair dresser',
-        image: 'some_url'
-    }
-    res.send(product)
+app.get(`${api}/products`,async (req,res)=>{
+    //USAMOS AWAIT YA QUE QUIZAS AL MOMENDO DE ENVIAR LA RESPUESTA, 
+    //AUN LA LISTA DE PRODUCTOS NO SE HA ENCONTRADO
+    const productList = await Product.find()
+    res.send(productList)
 })
 
 app.post(`${api}/products`,(req,res)=>{
-    //CON ESTA INSTRUCCION PEDIMOS LOS DATOS DESDE EL FRONTEND
-    const newProduct = req.body;
-    console.log(newProduct)
-    res.send(newProduct)
+    //CREACION DE LOS PRODUCTOS Y LLENADO DE LOS DATOS DESDE EL FORNTEND
+    const product = new Product({
+        name : req.body.name,
+        image: req.body.image,
+        countInStock :  req.body.countInStock
+    })
+
+    product.save()
+    //CON ESTA LINEA DESPEUS DE GUARDAR LA INFORMACION QUEREMOS INDICAR UNA CONFOMACION DEL ENVIO
+    //DE DATA CON 201 Y ADEMAS VER LOS DATOS EN FORMATO JSON
+    .then(createProducts=> res.status(201).json(createProducts))
+    .catch((err)=>{
+        res.status(500).json({
+            error: err,
+            sucess: false
+        })
+    })
+
 })
 
 /*NORMALMENTE LA CONEXION CON LA BASE DE DATOS SE HACE ANTES DE ABRIR EL SERVER */
