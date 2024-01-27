@@ -9,3 +9,5 @@ router.get('/',(req,res)=>{
         res.status(500).json({sucess: false})
     }
 })
+
+module.exports = router;

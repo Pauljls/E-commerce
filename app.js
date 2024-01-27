@@ -4,11 +4,17 @@ const bodyParser = require('body-parser')
 require('dotenv/config')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
-
-
-
-
+//ES NECESARIO USAR CORSE PARA PODER TRABAJAR CON SOLICITUDES LEJOS DE
+//DE NUESTRO AMBIENTE DE TRABAJO EN LOCALHOST:3000
+//COMO LO PODRIA SER EN LCOALHOST:5000 U OTROS
+//IMPORTANTE, CORS DEBE ESTAR ANNTES DE TODO
+app.use(cors)
+//CON ESTA LINEA DE OPCIONES DECIMOS QUE 
+//QUEREMOS USAR CORS EN CUALQUIER PETICION HTTP COMO
+// GET POST PUT DELETE, ETC
+app.options('*', cors)
 //MIDDLEWARE
 
 app.use(bodyParser.json());
@@ -28,9 +34,9 @@ app.get('/',(req,res)=>{
     res.send('Hola mundo')
 })
 app.use(`${api}/products`,productsRouter)
-app.use(`${api}/users`,productsRouter)
-app.use(`${api}/orders`,productsRouter)
-app.use(`${api}/categories`,productsRouter)
+app.use(`${api}/users`,usersRouter)
+app.use(`${api}/categories`,categoriesRouter)
+//app.use(`${api}/orders`,ordersRouter)
 
 /*NORMALMENTE LA CONEXION CON LA BASE DE DATOS SE HACE ANTES DE ABRIR EL SERVER */
 mongoose.connect(process.env.CONNECTION_STRING)

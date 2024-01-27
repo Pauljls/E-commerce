@@ -7,7 +7,7 @@ router.get('/',async(req,res)=>{
     if(!usersList){
         res.status(500).json({sucess : false})
     }
-    res.send(orderList);
+    res.send(usersList);
 })
 
 module.exports = router ;
