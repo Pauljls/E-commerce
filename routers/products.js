@@ -8,7 +8,10 @@ router.get(`/`, async (req,res)=>{
     //USAMOS AWAIT YA QUE QUIZAS AL MOMENDO DE ENVIAR LA RESPUESTA, 
     //AUN LA LISTA DE PRODUCTOS NO SE HA ENCONTRADO
     const productList = await Product.find();
-    res.send(productList)
+    if(!productList){
+        res.status(500).json({sucess:false})
+    }
+    res.send(productList);
 })
 
 router.post(`/`,(req,res)=>{

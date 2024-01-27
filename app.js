@@ -1,32 +1,36 @@
 const express = require("express")
 const app = express();
 const bodyParser = require('body-parser')
-/*ESTO NOS PERMITIRA USAR CONSTANTES ESPECIFICAS DE ARCHIVO .ENV */
 require('dotenv/config')
-/*CON ESTA LIBRERIA PODEMOS REGISTRAR LAS SOLICITUDES HTTPS */
 const morgan = require('morgan')
-/*CONEXION CON LA ABSE DE DATOS */
 const mongoose = require('mongoose')
-/*UNA COLECCION EN MONGODB ES LO MISMO QUE UN MODELO EN MONGOOSE */
 
-/*AQUI LLAMAMOS A LA CONSTANTE*/
-const api=process.env.API_URL;
 
-/*REFACTORIZACION DE LAS DIRECCIONES DE NUESTRO SITIO WEB */
-//const Product = require('./models/product');
-const productsRouter = require("./routers/products");
 
-/*UN MIDDLEWARE ES UNA FUNCION QUE TIENE EL CONTROL DEL PEDIDO Y RESPEUSTA DE CUALQUIER API */
-/*EN ESTE CASO ESTE MIDDLE WARE NOS AYDUARA A ANALI<AR MEJOR LA RESPUESTA DEL BODY EN EL FRONTEND */
-/*CUANDNO EL FRONT END ENVIE UN OBJETO JSON NECESITAMOS QUE EL BACKEND ENTIENDA ENTIENDA ESTE JSON  */
+
+
+//MIDDLEWARE
 
 app.use(bodyParser.json());
 app.use(morgan('tiny'))
-/*ROUTER TAMBEIN PUEDE SER USADO COMO MIDDLEWARE POR LO ANTERIORMENTE MENCIONADO 
-EN ESTE CASO SUAREMOS LA RUTA PRNCIPAL REGISTRADA AL MOMENTO*/
 
-//Routers
+const usersRouter = require('./routers/users')
+const productsRouter = require('./routers/products')
+const categoriesRouter = require('./routers/categories')
+const ordersRouter = require('./models/order')
+
+//ROUTES
+
+const api  = process.env.API_URL ;
+
+//Routers, ademas tambien son middlewares de rutas pero los ponemos aca porque en general son rutas
+app.get('/',(req,res)=>{
+    res.send('Hola mundo')
+})
 app.use(`${api}/products`,productsRouter)
+app.use(`${api}/users`,productsRouter)
+app.use(`${api}/orders`,productsRouter)
+app.use(`${api}/categories`,productsRouter)
 
 /*NORMALMENTE LA CONEXION CON LA BASE DE DATOS SE HACE ANTES DE ABRIR EL SERVER */
 mongoose.connect(process.env.CONNECTION_STRING)

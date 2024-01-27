@@ -14,6 +14,7 @@ const productSchema = mongoose.Schema({
 
 //LOS MODELOS SIEMPRE SE ESCRIBEN CON LETRA CAPITAL
 //EN ESTE PASO SE NOMBRA LA COLECCION Y LE ASIGNAMOS EL ESQUEMA
-module.exports = mongoose.model('Product',productSchema);
+module.exports = mongoose.model('Product', productSchema);
 
-
+//DE ESTA FORMA TAMBIEN FUNCIONA
+//exports.Product = mongoose.model('Product', productSchema)
