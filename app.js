@@ -10,7 +10,7 @@ const cors = require('cors')
 //DE NUESTRO AMBIENTE DE TRABAJO EN LOCALHOST:3000
 //COMO LO PODRIA SER EN LCOALHOST:5000 U OTROS
 //IMPORTANTE, CORS DEBE ESTAR ANNTES DE TODO
-app.use(cors)
+app.use(cors())
 //CON ESTA LINEA DE OPCIONES DECIMOS QUE 
 //QUEREMOS USAR CORS EN CUALQUIER PETICION HTTP COMO
 // GET POST PUT DELETE, ETC
@@ -20,21 +20,19 @@ app.options('*', cors)
 app.use(bodyParser.json());
 app.use(morgan('tiny'))
 
-const usersRouter = require('./routers/users')
+//const usersRouter = require('./routers/users')
 const productsRouter = require('./routers/products')
 const categoriesRouter = require('./routers/categories')
-const ordersRouter = require('./models/order')
+//const ordersRouter = require('./models/order')
 
 //ROUTES
 
 const api  = process.env.API_URL ;
 
 //Routers, ademas tambien son middlewares de rutas pero los ponemos aca porque en general son rutas
-app.get('/',(req,res)=>{
-    res.send('Hola mundo')
-})
+
 app.use(`${api}/products`,productsRouter)
-app.use(`${api}/users`,usersRouter)
+//app.use(`${api}/users`,usersRouter)
 app.use(`${api}/categories`,categoriesRouter)
 //app.use(`${api}/orders`,ordersRouter)
 

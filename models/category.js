@@ -1,9 +1,16 @@
 const mongoose = require('mongoose')
 categorySchema = mongoose.Schema({
-    name : String,
-    color : String,
-    icon : String,
-    image : String
+    name : {
+        type : String,
+        required : true
+    },
+    color : {
+        type : String
+    },
+    icon : {
+        type : String        
+    },
+    
 })
 
 
