@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Category = require('../models/category')
+const category = require('../models/category')
 
 
 router.get('/',async(req,res)=>{
@@ -35,5 +36,22 @@ router.post('/',async(req,res)=>{
     res.send(category);
 
 })
+//api/v1/23151sad
+router.delete('/:id',(req,res)=>{
+    //DE ESSTA FORMA OBTENDREMOS EL ID DESDE EL URL CON PARAMS
+    Category.findByIdAndDelete(req.params.id)
+    .then(category => {
+        if(category){
+            return res.status(200).json({success : true , message : 'La categoria ha sido encontrada'})
+        }else{
+            return res.status(404).json({success :  true, message : 'La categoria no puso ser encontrada'})
+        }
+    })
+    .catch(err=>{
+        return res.status(400).json({success : true, message : err})
+    })
+})
+
+//PODMEOS ELEGIR HACERL LA PETICION HTTP COMO CON EL GET CON ASYNC O CON EL DELTE CON UNA PROMESA NORMAL
 
 module.exports = router ;
