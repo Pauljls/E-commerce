@@ -7,7 +7,7 @@ const productSchema = mongoose.Schema({
         required : true,
 
     },
-    descripcionn : {
+    description : {
         type: String,
         required : true,
 
@@ -18,23 +18,21 @@ const productSchema = mongoose.Schema({
     },
     image: {
         type : String,
-        default : ' '
+        default : ''
     },
     //DE ESTA FORMA DEFINIMOS QUE UN ITEM SERA UN ARRAY, 
     //POR DENTRO IRA LA FORMA DEL OBJETO QUE ESTAMOS CREANO
     //EN ESTE CASO UN ARRAY DE STRINGS
     images : [{
         type : String,
-
     }],
     brand : {
-        type : Number,
-        required : true
+        type : String,
+        default : ''
     },
     price: {
         type : Number,
         default : 0,
-
     },
     //CUANDO QUIERA AGREGAR UN  PRODUCTO USARE EL ID D ELA CATEGORIA, Y CREAREMOS EL ENLACE ENTRE AMBOS
     //ESQUEMAS DE LASIGUIENTE FORMA, EN ESTE CASO EL LINK ES LA CATEGORIA
@@ -46,9 +44,9 @@ const productSchema = mongoose.Schema({
         ref : 'Category',
         required :true 
     },
-    countInShock: {
+    countInStock: {
         type : Number,
-        default : 0,
+        required: true,
         //PROPEIDAD ESPECIAL APRA ESTABLECER UN RANGO 
         min: 0,
         max: 255
@@ -57,15 +55,11 @@ const productSchema = mongoose.Schema({
         type : Number,
         required : true
     },
-    rating :{
-        type: Number,
-        default : 0
-    },
     numReviews: {
         type : Number,
         default :  0
     },
-    isFeature : {
+    isFeatured : {
         type: Boolean,
         default:  false
     },
