@@ -8,7 +8,7 @@ const Category = require('../models/category')
 router.get(`/`, async (req,res)=>{
     //PODEMOS ADEMAS HACER QUERYS PARA TENER UNA PRESENTACION MAS LIMPIA
     //EN ESTE CASO ELIMINARESMOS EL ID YA QUE SIEMPRE SE MUESTRA POR DEFECTO
-    const productList = await Product.find().select('name image -_id');//SI QUEREMOS INDICAR QUE NO S EMEUSTRE ALGO SUAREMOS -
+    const productList = await Product.find().populate('category');//SI QUEREMOS INDICAR QUE NO S EMEUSTRE ALGO SUAREMOS -
     
     if(!productList){
         res.status(500).json({sucess:false})
@@ -47,7 +47,9 @@ router.post(`/`,async(req,res)=>{
 
 //PEDIR UN SOLO PRODUCTO
 router.get('/:id',async(req,res)=>{
-    const product = await Product.findById(req.params.id)
+    //Populate ayuda a que si hay algun id u otro campo de otra tabla,entonces este lo
+    //mostrara en el campo que se invoca
+    const product = await Product.findById(req.params.id).populate('category')
     if(!product){
         return res.status(400).json({message : "El producto no existe"})
     }
