@@ -3,18 +3,20 @@ const router = express.Router();
 const Product = require('../models/product')
 const Category = require('../models/category')
 
-/*USAREMOS BACKTICKS PARA COMBINAR MEJOR EL TEXTO CON OBJETOS YA QUE,
-NECESITAMOS QUE ESTO SEA DINAMICO */
+
+//PEDIR TODOS LOS PRODUCTOS,UNA LISTA
 router.get(`/`, async (req,res)=>{
-    //USAMOS AWAIT YA QUE QUIZAS AL MOMENDO DE ENVIAR LA RESPUESTA, 
-    //AUN LA LISTA DE PRODUCTOS NO SE HA ENCONTRADO
-    const productList = await Product.find();
+    //PODEMOS ADEMAS HACER QUERYS PARA TENER UNA PRESENTACION MAS LIMPIA
+    //EN ESTE CASO ELIMINARESMOS EL ID YA QUE SIEMPRE SE MUESTRA POR DEFECTO
+    const productList = await Product.find().select('name image -_id');//SI QUEREMOS INDICAR QUE NO S EMEUSTRE ALGO SUAREMOS -
+    
     if(!productList){
         res.status(500).json({sucess:false})
     }
     res.send(productList);
 })
 
+//CREACION DE UN PRODUCTO
 router.post(`/`,async(req,res)=>{
     //CREACION DE LOS PRODUCTOS Y LLENADO DE LOS DATOS DESDE EL FORNTEND
     //COMO ESTAMOS USANDO EN UNA DE NUESTRAS PROPIEDADES EL ID DE OTRO MODELO
@@ -41,6 +43,15 @@ router.post(`/`,async(req,res)=>{
     return res.status(500).send('El producto no puede ser creado')
 
     res.send(product)
+})
+
+//PEDIR UN SOLO PRODUCTO
+router.get('/:id',async(req,res)=>{
+    const product = await Product.findById(req.params.id)
+    if(!product){
+        return res.status(400).json({message : "El producto no existe"})
+    }
+    res.status(200).send(product)
 })
 
 module.exports = router;
