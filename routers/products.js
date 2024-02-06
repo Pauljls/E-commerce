@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const Product = require('../models/product')
-const Category = require('../models/category')
+const Category = require('../models/category');
+const mongoose = require('mongoose')
 
 
 //PEDIR TODOS LOS PRODUCTOS,UNA LISTA
@@ -58,6 +59,15 @@ router.get('/:id',async(req,res)=>{
 
 
 router.put('/:id', async(req,res)=>{
+    //NECESITAMO VALIDAR LOS IDS, ESTO ES MAS EFECTIVO AL HACERCE MEDIANTE
+    //UNA PROMESA YA QUE PODEMOS CATURAR EL ERROR Y MOSTRARLO, CASO CONTRARIO
+    //JAMAS TERMINARA DE EVLAUARSE EL CODIGO, PERO SI QUEREMOS MANTENER LA ESTRUCTURA SIN
+    //PROMESA PODEMOS USAR UN METODO DE MONGOOSE
+
+    if(!mongoose.isValidObjectId(req.params.id)){
+        return res.status(400).send('Invalid Product ID')
+    }
+
     const category = await Category.findById(req.body.category)
     if(!category) return res.status(400).send('Invalid Category')
     const product = await Product.findByIdAndUpdate(req.params.id,{
@@ -78,6 +88,22 @@ router.put('/:id', async(req,res)=>{
         return res.status(404).json({message : "El usuario no puede actualziarce"})
     }
     res.status(200).send(product)
+})
+
+
+router.delete('/:id',(req,res)=>{
+    //DE ESSTA FORMA OBTENDREMOS EL ID DESDE EL URL CON PARAMS
+    Product.findByIdAndDelete(req.params.id)
+    .then(product => {
+        if(product){
+            return res.status(200).json({success : true , message : 'El producto ha sido encontrada'})
+        }else{
+            return res.status(404).json({success :  true, message : 'El producto no pudo ser encontrada'})
+        }
+    })
+    .catch(err=>{
+        return res.status(400).json({success : true, message : err})
+    })
 })
 
 module.exports = router;
