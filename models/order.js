@@ -1,10 +1,9 @@
 const mongoose  = require('mongoose')
-const product = require('./product')
 const orderSchema = mongoose.Schema({
     orderItems : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'Product',
-        require : true 
+        require : false 
     }],
     shippingAddress1: {
         type : String,
@@ -30,7 +29,7 @@ const orderSchema = mongoose.Schema({
         type : Number,
         require : true
     }, 
-    st4tus: {
+    status: {
         type : String,
         require : true
     }, 

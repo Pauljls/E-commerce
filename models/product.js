@@ -7,7 +7,7 @@ const productSchema = mongoose.Schema({
         required : true,
 
     },
-    descripcionn : {
+    description : {
         type: String,
         required : true,
 
@@ -28,7 +28,7 @@ const productSchema = mongoose.Schema({
 
     }],
     brand : {
-        type : Number,
+        type : String,
         required : true
     },
     price: {
@@ -43,19 +43,18 @@ const productSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         //ANTERIORMENTE SE DIJO QUE USAREMOS EL ID PERO AUN NO ESPECIFICAMOS QUE
         //ESQUEMA SERA ELQUE USAREMOS APRA ESTO SERA NECESARIO USAR UNA NEFERENCIA
+        //EL NOMBRE QUE ASIGNEMOS EN LA REFERENCIA SIEMPRE
+        //DEBERA SER CON ELQUE ASIGNMAOS COMO MODELO NO COMO
+        //SCHEMA
         ref : 'Category',
         required :true 
     },
-    countInShock: {
+    countInStock: {
         type : Number,
         default : 0,
         //PROPEIDAD ESPECIAL APRA ESTABLECER UN RANGO 
         min: 0,
         max: 255
-    },
-    rating : {
-        type : Number,
-        required : true
     },
     rating :{
         type: Number,
