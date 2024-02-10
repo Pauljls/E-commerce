@@ -106,4 +106,17 @@ router.delete('/:id',(req,res)=>{
     })
 })
 
+router.get('/get/count',async(req,res)=>{
+    //MONGOOSE NOS PROPORCIONARA ALGUNOS METODOS PARA BRINDAR
+    //DATOS ESTADISTICOS AL CLIENTE
+    const productCount = await Product.countDocuments()
+
+    if(!productCount){
+        return res.status(500).json({succes:false})
+    }
+    res.status(200).send({
+        productCount : productCount
+    })
+})
+
 module.exports = router;
