@@ -119,4 +119,46 @@ router.get('/get/count',async(req,res)=>{
     })
 })
 
+//1.LA PROPIEDAD ISFEATURED, NOS INDICARA SI EL ELEMENTO SERA MOSTRADO
+//  O NO EN HOME PAGE POR ESO TIENE UN VALOR DE TRUE O FALSE
+//  PARA ESTO TOMAREMOS L CASO ANTERIOR
+router.get('/get/featured',async(req,res)=>{
+
+    //CON LA SIGUIENTE LINEA DE CODIGO BUSCAMOS YA NO POR ID
+    //SINO POR EL ATRIBUTO O VALOR DE ESTE QUE ESPEREMOS QUE TENGA
+    //EN ESTE CASO QUEREMOS SOLO LOS QUE TENGAN VALOR TRUE EN ISFEATURED
+    const product = await Product.find({isFeatured : true})
+
+    if(!product){
+        return res.status(500).json({succes:false})
+    }
+    res.status(200).send(product)
+})
+
+//2.PODEMOS LIMITAR LA CANTIDAD QUE QUEREMOS QUE SEA MOSTRADA TAMBIEN EN ESTE CASO LO HARMEOS MEDIANTE 
+//  LA URL, ES DECIR EL SUUSAIRO NOS INDICARA MEDIANTE LA URL LA CANTIDAD QUE SE DESEA MOSTRAR
+
+router.get('/get/featured/:count',async(req,res)=>{
+
+    //esta sintaxis es similar a un if , empieza con una pregunta
+    //y luego responde en caso todo haya salido bien, sino se da la otra
+    //opcion despues de los dos puntos
+    // 2+2 === 5 ? 5 : 4
+    //en este caso en concreto si encuentra un valor en count lo asigna en  caso no enviara un cero
+
+    const count  =  req.params.count ? req.params.count: 0
+
+    //usaremos el metodo limit para solo mostrar la cantidad que queramos,
+    //en este caso la cantidad asignada en la url
+
+    //como dato extra la constante al recuperar valores de params este sera un string
+    //para no complicarnos para transformarlo en un numero pondremos un signo mas a su costado
+    const product = await Product.find({isFeatured : true}).limit(+count)
+
+    if(!product){
+        return res.status(500).json({succes:false})
+    }
+    res.status(200).send(product)
+})
+
 module.exports = router;
