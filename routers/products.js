@@ -5,17 +5,39 @@ const Category = require('../models/category');
 const mongoose = require('mongoose')
 
 
-//PEDIR TODOS LOS PRODUCTOS,UNA LISTA
+//QUERY PARAMETERS
+
 router.get(`/`, async (req,res)=>{
-    //PODEMOS ADEMAS HACER QUERYS PARA TENER UNA PRESENTACION MAS LIMPIA
-    //EN ESTE CASO ELIMINARESMOS EL ID YA QUE SIEMPRE SE MUESTRA POR DEFECTO
-    const productList = await Product.find().populate('category');//SI QUEREMOS INDICAR QUE NO S EMEUSTRE ALGO SUAREMOS -
+    //FORM
+    //localhost:3000/api/v1/products?categories=2000,2654
+
+    //PRIMERA OPCION
+    // EN ESTE CASO SENCILLAMENTE EL QUERY ES CONERTIDO EN CADENA Y SE ENVIA 
+    // EL ARRAY AL OBBJEETO QUE SE CREO DENTRO DEL find
+
+    /*2.  let category=[]*/
     
+    //SEGUNDA OPCION MAS DINAMICA MOSTRADA
+    //AL USAR UN OBJETO ENVIAREMOS DIRECTAMENTE LA VARIBLE EN 
+    //VEZ DE CREAR EL OBJETO EN EL FILTER ADEMAS ASIGNAREMOS EL ATRIBUTO
+    //EN EL IF
+    let filter = {}
+
+    if(req.query.category){
+        //la funcion split convierte a la cadena en un array de pequeñas subcadenas
+        filter =  {category : req.query.category.split(',')}
+    }
+    //mongoose al pasarle un arreglo en el atributo del objeto intentara identificar los datos 
+    //de la query con lso datos que se encuentren alli
+    const productList = await Product.find(filter).populate('category');
+
     if(!productList){
         res.status(500).json({sucess:false})
     }
     res.send(productList);
 })
+
+
 
 //CREACION DE UN PRODUCTO
 router.post(`/`,async(req,res)=>{
@@ -160,5 +182,7 @@ router.get('/get/featured/:count',async(req,res)=>{
     }
     res.status(200).send(product)
 })
+
+
 
 module.exports = router;
