@@ -71,6 +71,16 @@ const productSchema = mongoose.Schema({
 
 })
 
+//CREACION DE ID VIRTUAL
+
+productSchema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+productSchema.set('toJSON',{
+    virtuals : true
+})
+
 //LOS MODELOS SIEMPRE SE ESCRIBEN CON LETRA CAPITAL
 //EN ESTE PASO SE NOMBRA LA COLECCION Y LE ASIGNAMOS EL ESQUEMA
 module.exports = mongoose.model('Product', productSchema);
