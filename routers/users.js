@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/user')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 
 router.get('/',async(req,res)=>{
     const usersList = await User.find()
@@ -15,7 +15,10 @@ router.post('/',(req,res)=>{
     const user  = new User({
         name : req.body.name,
         email : req.body.email,
-        passwordHash: req.body.passwordHash,
+        //USARESMOS BCRYPT PARA ENCRIPTAR LA CONTRASEÑA
+        //Y EL METODO ESPECIFICO APRA ESTO ES HASHSYC ADEMAS
+        //AGREGAREMOS INFORMACION SECRETA EXTRA, EN ESTE CASO SERA CUALQUIER COSA
+        passwordHash: bcrypt.hashSync( req.body.password,10),
         phone : req.body.phone, 
         street :req.body.street, 
         apartment: req.body.apartment,
