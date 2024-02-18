@@ -5,7 +5,7 @@ require('dotenv/config')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
-//const usersRouter = require('./routers/users')
+const usersRouter = require('./routers/users')
 const productsRouter = require('./routers/products')
 const categoriesRouter = require('./routers/categories')
 //const ordersRouter = require('./models/order')
@@ -32,7 +32,7 @@ const api  = process.env.API_URL ;
 //Routers, ademas tambien son middlewares de rutas pero los ponemos aca porque en general son rutas
 
 app.use(`${api}/products`,productsRouter)
-//app.use(`${api}/users`,usersRouter)
+app.use(`${api}/users`,usersRouter)
 app.use(`${api}/categories`,categoriesRouter)
 //app.use(`${api}/orders`,ordersRouter)
 
