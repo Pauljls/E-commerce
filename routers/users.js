@@ -4,12 +4,23 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 
 router.get('/',async(req,res)=>{
-    const usersList = await User.find()
+
+    const usersList = await User.find().select('name phone email')
     if(!usersList){
         res.status(500).json({sucess : false})
     }
     res.send(usersList);
 })
+router.get('/:id',async(req,res)=>{
+    //CON SELECT AHREMOS UN FILTRADO COMO ANTERIORMENTE SE MENCIONO
+    //EN ESTE CASO NO QUEREMOS QUE S EMUESTRE PASSWORD ASI QUE USAMOS -'SOMETHING'
+    const user = await User.findById(req.params.id).select('-passwordHash')
+    if(!user){
+        res.status(500).json({sucess : false})
+    }
+    res.send(user);
+})
+
 
 router.post('/',(req,res)=>{
     const user  = new User({
