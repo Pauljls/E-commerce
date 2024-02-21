@@ -3,8 +3,9 @@ const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+//const authJwt = require('../helpers/jwt')
 
-router.get('/',async(req,res)=>{
+router.get('/', async(req,res)=>{
 
     const usersList = await User.find()//.select('name phone email')
     if(!usersList){
@@ -61,7 +62,7 @@ router.post('/login',async(req,res)=>{
     //PORQUE LA CONTRASEÑA FUE ANTERIORMENTE INCRIPTADA ASI QUE NECESITAMOS DESENCRIPTARLA
     if(user && bcrypt.compareSync(req.body.password,user.passwordHash)){
         
-        const secret = process.env.SECRET
+        const secret = process.env.secret
         const token = jwt.sign({
             userId : user.id
         },

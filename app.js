@@ -7,10 +7,11 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const usersRouter = require('./routers/users')
 const productsRouter = require('./routers/products')
-const categoriesRouter = require('./routers/categories')
+const categoriesRouter = require('./routers/categories');
+const authJwt = require("./helpers/jwt");
 //const ordersRouter = require('./models/order')
 
-//MIDDLEWARE
+//MIDDLEWARE -REVISA TODO LO QUQE VA AL SERVIDOR ANTES DE EJECUTARSE
 //ES NECESARIO USAR CORSE PARA PODER TRABAJAR CON SOLICITUDES LEJOS DE
 //DE NUESTRO AMBIENTE DE TRABAJO EN LOCALHOST:3000
 //COMO LO PODRIA SER EN LCOALHOST:5000 U OTROS
@@ -19,9 +20,10 @@ app.use(cors())
 //CON ESTA LINEA DE OPCIONES DECIMOS QUE 
 //QUEREMOS USAR CORS EN CUALQUIER PETICION HTTP COMO
 // GET POST PUT DELETE, ETC
-app.options('*', cors)
+app.options('*', cors);
 app.use(bodyParser.json());
-app.use(morgan('tiny'))
+app.use(morgan('tiny'));
+app.use(authJwt);
 
 
 
