@@ -9,6 +9,7 @@ const usersRouter = require('./routers/users')
 const productsRouter = require('./routers/products')
 const categoriesRouter = require('./routers/categories');
 const authJwt = require("./helpers/jwt");
+const errorHandler = require('./helpers/error-handler')
 //const ordersRouter = require('./models/order')
 
 //MIDDLEWARE -REVISA TODO LO QUQE VA AL SERVIDOR ANTES DE EJECUTARSE
@@ -24,7 +25,12 @@ app.options('*', cors);
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(authJwt);
-
+app.use(((err, req , res ,next) =>{
+    if (err){
+        console.log(err)
+        res.status(500).json({message: err})
+    }
+}))
 
 
 //ROUTES
