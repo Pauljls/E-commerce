@@ -25,12 +25,7 @@ app.options('*', cors);
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(authJwt);
-app.use(((err, req , res ,next) =>{
-    if (err){
-        console.log(err)
-        res.status(500).json({message: err})
-    }
-}))
+app.use(errorHandler)
 
 
 //ROUTES

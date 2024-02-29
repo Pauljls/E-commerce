@@ -1,6 +1,12 @@
 function errorHandler(err, req,res,next){
-    if(err){
-        return res.status(500).json({message : err})
+    if(err.name == 'UnauthorizedError'){
+        return res.status(401).json({message : "El usuario no esta autorizado"})
     }
+
+    if(err.name == 'ValidationError'){
+        return res.status(401).json({message : err})
+    }
+
+    return res.status(500).json({message : err})
 }
 module.exports = errorHandler
