@@ -1,10 +1,10 @@
 function errorHandler(err, req,res,next){
-    if(err.name == 'UnauthorizedError'){
-        return res.status(401).json({message : "El usuario no esta autorizado"})
+    if(err.code == "credentials_required"){
+        return res.status(401).json({message : "El usuario no se autorizado"})
     }
 
-    if(err.name == 'ValidationError'){
-        return res.status(401).json({message : err})
+    if(err.code == "invalid_token"){
+        return res.status(401).json({message : "Token invalidos"})
     }
 
     return res.status(500).json({message : err})
