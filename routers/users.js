@@ -3,7 +3,8 @@ const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-//const authJwt = require('../helpers/jwt')
+const user = require('../models/user')
+
 
 router.get('/', async(req,res)=>{
 
@@ -110,6 +111,34 @@ router.post('/login',async(req,res)=>{
         res.status(400).send('La contraseña es incorrecta')
     }
     
+})
+
+router.get('/get/count',async(req,res)=>{
+    //RECUERDA QUE ES COUNTDOCUMENTS ES UN METODO EN LOS MODELOS DE MONGOSE
+    const userCount = await User.countDocuments()
+    if(!userCount){
+        return res.status(200).send({
+            message : 'No hay documentos'
+        })
+    }
+    res.status(200).send({
+        NroDocumentos : userCount
+    })
+})
+
+router.delete('/:id',(req,res)=>{
+    //DE ESSTA FORMA OBTENDREMOS EL ID DESDE EL URL CON PARAMS
+    User.findByIdAndDelete(req.params.id)
+    .then(user => {
+        if(user){
+            return res.status(200).json({success : true , message : 'El usuario ha sido encontrada'})
+        }else{
+            return res.status(404).json({success :  true, message : 'El usuario no pudo ser encontrada'})
+        }
+    })
+    .catch(err=>{
+        return res.status(400).json({success : true, message : err})
+    })
 })
 
 module.exports = router ;
