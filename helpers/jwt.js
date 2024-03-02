@@ -7,8 +7,11 @@ function authJwt(req, res, next) {
     const api = process.env.API_URL
     expressJwt({
         secret,
-        algorithms: ['HS256']
-        //se require de req res para que peuda interactuar con las solicitudes http
+        algorithms: ['HS256'],
+        //JWT TIENE UN METODO QUE NOS PERMITIRA REVISAR LA INFOMRACION DEL TOKEN
+        //EN ESTE CASO REVISAREMOS QUE SEA UN ADMIN APRA QUE PEUDA MODIFICAR LA INFOMARCION 
+        //DE LA BD
+        isRevoked : isRevoked
     }).unless(
         //CON UNLESS ESPECIFICAMOS LAS RUTAS EN LAS QUE NO NECESITAMOS SER AUTENTICADOS
         {
@@ -25,9 +28,19 @@ function authJwt(req, res, next) {
             '/api/v1/users/login',
             '/api/v1/users/register'
         ]
-    })(req, res, next);
+    })
+    //se require de req res para que peuda interactuar con las solicitudes http
+    (req, res, next);
 }
+//CON PAYLOAD NOSOTROS REVISAMOS LA INFORMACION DENTRO DEL TOKEN
+async function isRevoked(req,payload,done){
+    if(!payload.isAdmin){
+    //CON ESTA CONFIGURACION EN DONE RECHAZAMOS EL TOKEN
+        done(null,true)
+    }
 
+    done()
+}
 
 module.exports = authJwt;
 
