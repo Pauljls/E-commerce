@@ -64,7 +64,10 @@ router.post('/login',async(req,res)=>{
         
         const secret = process.env.secret
         const token = jwt.sign({
-            userId : user.id
+            //EN ESTE APARTADO PODEMOS DECIDIR QUE INFORMACION QUEREMOS QUE SE ENVIE EN EL TOKEN 
+            userId : user.id,
+            //EN ESTE CASO QUEREMOS SABER SI EL USUARIO ES ADMIN O NO ASI QUE SE ENVIARA ATRAVEZ DEL TOKEN 
+            isAdmin : user.isAdmin
         },
         //USAREMOS EL PARAMETRO SECRET COMO FIRMA Y DECIR QUE EL TOKEN ES VALIDO
         //CON ESTO EL SERVIDOR SABE QUE EL TOKEN ES AUTENTICO Y NO ALGUIEN INTENTANDO HACER UNO FALSO
