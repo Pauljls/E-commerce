@@ -10,7 +10,7 @@ const productsRouter = require('./routers/products')
 const categoriesRouter = require('./routers/categories');
 const authJwt = require("./helpers/jwt");
 const errorHandler = require('./helpers/error-handler')
-//const ordersRouter = require('./models/order')
+const ordersRouter = require('./routers/orders')
 
 //MIDDLEWARE -REVISA TODO LO QUQE VA AL SERVIDOR ANTES DE EJECUTARSE
 //ES NECESARIO USAR CORSE PARA PODER TRABAJAR CON SOLICITUDES LEJOS DE
@@ -37,7 +37,7 @@ const api  = process.env.API_URL ;
 app.use(`${api}/products`,productsRouter)
 app.use(`${api}/users`,usersRouter)
 app.use(`${api}/categories`,categoriesRouter)
-//app.use(`${api}/orders`,ordersRouter)
+app.use(`${api}/orders`,ordersRouter)
 
 /*NORMALMENTE LA CONEXION CON LA BASE DE DATOS SE HACE ANTES DE ABRIR EL SERVER */
 mongoose.connect(process.env.CONNECTION_STRING)
