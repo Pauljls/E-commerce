@@ -3,8 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Order = require('../models/order')
 const OrderItem = require('../models/order-item')
-const order = require('../models/order')
-const orderItem = require('../models/order-item')
+
 
 router.get('/',async(req,res)=>{
     //PODEMOS ESCOOGER EL NOMBRE DEL CAMPO QUE ES OTRO MODELO COMO PRIEMR PARAMETRO Y ADEMAS
@@ -53,6 +52,26 @@ router.post('/', async (req, res) => {
         //FINALMENTE RESOLVEMOS LA PROMESA COMPBIANDA DE TODO EL ARRAY DE PROMESAS 
         const orderItemsIdsResolved = await orderItemsIds
 
+
+        //AQUI TRATERMOS DE CREAR UN ARRERLO CON LOS PRECIOS TOTALES DE CADA ITEM, RECORRRIENDO 
+        //EL ARRAY DE ID E INVOCANDO LOS OBJETOS CON FINDBYID, RECORDAR QUE ESTE TIPO DE OPERACION NECESITAN 
+        //RESOLVERSE COMO UNA PROMESA CONJUNTA EN REPRESENTACION DE TODOS CON PROMMISE ALL
+        const totalPrices = await Promise.all(orderItemsIdsResolved.map(async orderItemId => {
+            const orderItem = await OrderItem.findById(orderItemId).populate('product', 'price')
+            const totalPrice = orderItem.product.price * orderItem.quantity
+            return totalPrice
+        }))
+
+
+        console.log( totalPrices)
+        //CON LA FUNCION REDUCE, ESTA BUSCA COLAPSAR UN ARRAY EN UN SOLO ELEMENTO,
+        //EN ESTE CASO LO COLAPSAREMOS EN EL VALOR TOTAL DE TODOS SUS ELEMENTOS,
+        //DONDE REDUCE SIEMPRE ACEPTARA UNA FUNCION COMO APRAMETRO O CALLBACK Y UN VALOR INICAL
+        //EN ESTE CASO ES CERO Y LA FUNCION ES UNA SUMA DON A SERA EL ACUNUADOR Y B EL ELEMNTO ACTUAL
+        const totalPrice = totalPrices.reduce((a,b)=> a+b,0)
+
+        
+
         let order = new Order({
             orderItems: orderItemsIdsResolved,
             shippingAddress1: req.body.shippingAddress1,
@@ -62,7 +81,7 @@ router.post('/', async (req, res) => {
             country: req.body.country,
             phone: req.body.phone,
             status: req.body.status,
-            totalPrice: req.body.totalPrice,
+            totalPrice: totalPrice,
             user: req.body.user
         });
 
