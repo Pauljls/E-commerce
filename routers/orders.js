@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Order = require('../models/order')
 const OrderItem = require('../models/order-item')
+const order = require('../models/order')
 
 
 router.get('/',async(req,res)=>{
@@ -116,6 +117,50 @@ router.delete('/:id',(req,res)=>{
     })
     .catch(err => res.status(500).send({success :false,  message: err}))
 
+})
+
+
+router.get('/get/totalsales',async (req,res)=>{
+    
+    //LA FUNCION AGREGATE FUNCIONARA COMO UN JOIN
+    //YA QUE AGRUPARA CON $GROUP INFORMACION MOSNTRANDONOS LA INFORMACION
+    //COMPARTIDA EN ESTE CASO NOS MOSTRARA EL PRECIO TOTAL
+
+
+    //PARA GENERA LA SUMA TOTAL USAMO LA PALABRA RESERVADA $SUM Y LUEGO 
+    //PASAMO LOS DATOS QUE VAMOS A QUERER SUAMR CON $ EN ESTE CASO EL PRECIO TOTAL
+    const totalsales =  await Order.aggregate([
+        {$group:{_id: null,totalsales : {$sum : '$totalPrice'}}}
+    ])
+
+    if(!totalsales){
+        return res.status(400).send('La orden no pudo ser generada')
+    }
+    //CON ESTA INSTRUCCION ESTAMOS EXTRAYENDO EL UNICO ELEMNTO DE ARRAY Y ACCEDEMOS AL ATRIBUTO 
+    //DE TOTALSALES
+    res.send({totalsales :  totalsales.pop().totalsales})
+})
+
+
+router.get('/get/count',async(req,res)=>{
+    const countotal =  await Order.countDocuments()
+    if(!countotal){
+        return res.status(400).send('No se pudo contar los docuemtnos')
+    }
+    res.status(200).send({productCount : countotal})
+})
+
+router.get('/get/userorders/:id',async(req,res)=>{
+    const orderList = await Order.find({user : req.params.id}).populate('user','name').populate({
+        path: 'orderItems', populate: {
+            path: 'product', populate : 'category'
+        }}).sort({
+        "dateOrdered" : -1
+    })
+    if(!orderList){
+        res.status(500).json({success : false})   
+    }
+    res.send(orderList)
 })
 
 module.exports = router;
