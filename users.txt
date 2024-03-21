@@ -1,0 +1,12 @@
+{
+    "name" : "luis1",
+    "email" : "luis@gmail.com",
+    "password" : "123456",
+    "phone" : "123456",
+    "street" : "golf",
+    "apartment" : "casa 1 ",
+    "city" : "Trujillo",
+    "zip" : "13011",
+    "country" : "Peru",
+    "isAdmin" : false
+}

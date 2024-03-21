@@ -3,8 +3,23 @@ const router = express.Router();
 const Product = require('../models/product')
 const Category = require('../models/category');
 const mongoose = require('mongoose')
+const multer = require('multer')
 
 
+const storage = multer.diskStorage({
+    destination : function(req,file,cb){
+        //EL CALL BACK AQUI USA DOS PARAMETROS LA FUNCION DE ERRORES 
+        //Y EL DESTINO DEL CONTENIDO A SUBIR
+        cb(null,'/public/uploads')
+    },
+
+    filename: function(req,file,cb){
+        const filename = file.originalname.split(' ').join('-')//img 01 = img-01
+        cb(null, filename+'-'+Date.now)//img-01-11052024
+    } 
+})
+
+const uploadOptions = multer({storage :  storage})
 //QUERY PARAMETERS
 
 router.get(`/`, async (req,res)=>{
@@ -40,17 +55,22 @@ router.get(`/`, async (req,res)=>{
 
 
 //CREACION DE UN PRODUCTO
-router.post(`/`,async(req,res)=>{
+router.post(`/`,uploadOptions.single('image'),async(req,res)=>{
     //CREACION DE LOS PRODUCTOS Y LLENADO DE LOS DATOS DESDE EL FORNTEND
     //COMO ESTAMOS USANDO EN UNA DE NUESTRAS PROPIEDADES EL ID DE OTRO MODELO
     //SERA NECESARIO BUSCAR YS ABER QUE EXISTE
     const category = await Category.findById(req.body.category)
     if(!category) return res.status(400).send('Invalid Category')
+    //AQUI REGISTRAMOS EL NOMBRE DEL ARCHIVO, QUE FUE ASIGNADO EN LA CONFIGURACION
+    const fileName =req.file.filename
+                        // HTTP              localhost
+    const basicPath = `${req.protocol}://${req.get('host')}/public/uploads`// =  http://localhost:3000/public/uploads
     let product = new Product({
         name : req.body.name,
         description : req.body.description,
         richDescription: req.body.richDescription,
-        image: req.body.image,
+        //NECESITAMOS ESTA FORMA PARA CUANDO QUERAMOS RECUPERAR LOS DATOS EN EL FRONTEND PODER ENCONTRARLOS
+        image: `${basicPath}${fileName}`,
         brand: req.body.brand,
         price:  req.body.price,
         category: req.body.category,
