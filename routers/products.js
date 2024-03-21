@@ -76,6 +76,9 @@ router.post(`/`,uploadOptions.single('image'),async(req,res)=>{
     //SERA NECESARIO BUSCAR YS ABER QUE EXISTE
     const category = await Category.findById(req.body.category)
     if(!category) return res.status(400).send('Invalid Category')
+
+    const file = req.file
+    if(!file) return res.status(400).send('No hay imagen')
     //AQUI REGISTRAMOS EL NOMBRE DEL ARCHIVO, QUE FUE ASIGNADO EN LA CONFIGURACION
     const fileName =req.file.filename
                         // HTTP              localhost

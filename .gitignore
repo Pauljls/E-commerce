@@ -1,2 +1,6 @@
+#ARCHIVOS
 node_modules
 .prettierc
+
+#CARPETAS
+uploads
