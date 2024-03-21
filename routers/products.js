@@ -5,17 +5,32 @@ const Category = require('../models/category');
 const mongoose = require('mongoose')
 const multer = require('multer')
 
+//CREAREMOS UNA LISTA DE EXTENSIONES PERMITIDAS EN NUESTRA API
+
+const FILE_TYPE_MAP = {
+    'image/png' :  'png', // key :value --- FORMATO MIMETYPE
+    'image/jpeg' : 'jpeg',
+    'image/jpg' : 'jpg'
+}
+
 
 const storage = multer.diskStorage({
     destination : function(req,file,cb){
-        //EL CALL BACK AQUI USA DOS PARAMETROS LA FUNCION DE ERRORES 
-        //Y EL DESTINO DEL CONTENIDO A SUBIR
-        cb(null,'/public/uploads')
+        //CREAREMOS UN ERROR PARA PODER USARLO EN EL CALLBACK
+        const isValid = FILE_TYPE_MAP[file.mimetype]
+        let uploadError = new Error('Tipo de imagen invalida')
+        if(isValid){
+            uploadError =  null
+        }
+        cb(uploadError,'public/uploads')
     },
 
     filename: function(req,file,cb){
+        //usaermos mymetype para incluir la informacion de nuestro archivo
         const filename = file.originalname.split(' ').join('-')//img 01 = img-01
-        cb(null, filename+'-'+Date.now)//img-01-11052024
+        //EN ESTA SENTENCIA DECIMOS QUE IRA A BUSCAR EL TIPO DE FORMATO AL ARRAY Y LA ASIGNARA
+        const extension = FILE_TYPE_MAP[file.mimetype]
+        cb(null, `${filename}-${Date.now()}.${extension}`)//img-01-11052024
     } 
 })
 
@@ -64,7 +79,7 @@ router.post(`/`,uploadOptions.single('image'),async(req,res)=>{
     //AQUI REGISTRAMOS EL NOMBRE DEL ARCHIVO, QUE FUE ASIGNADO EN LA CONFIGURACION
     const fileName =req.file.filename
                         // HTTP              localhost
-    const basicPath = `${req.protocol}://${req.get('host')}/public/uploads`// =  http://localhost:3000/public/uploads
+    const basicPath = `${req.protocol}://${req.get('host')}/public/uploads/`// =  http://localhost:3000/public/uploads
     let product = new Product({
         name : req.body.name,
         description : req.body.description,
