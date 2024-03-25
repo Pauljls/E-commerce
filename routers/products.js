@@ -221,6 +221,29 @@ router.get('/get/featured/:count',async(req,res)=>{
     res.status(200).send(product)
 })
 
+router.put('/gallery-images/:id',uploadOptions.array('images',10), async(req,res)=>{
+
+    if(!mongoose.isValidObjectId(req.params.id)){
+        return res.status(400).send('Invalid Product ID')
+    }
+
+    const images = req.files
+    const basicPath = `${req.protocol}://${req.get('host')}/public/uploads/`// =  http://localhost:3000/public/uploads
+    const localPath = []
+    if(images){
+        images.map(image => localPath.push(`${basicPath}${image.fileName}`))
+    }
+        const product = await Product.findByIdAndUpdate(req.params.id,{
+        //ASIGNAMOS UN ARRAY YA QUE EN EL SCHEAM SE DEFINIO COMO ARRAY
+        images : localPath
+    },
+    {new : true})
+    if(!product){
+        return res.status(404).json({message : "El Producto no puede actualizarce"})
+    }
+    res.status(200).send(product)
+})
+
 
 
 module.exports = router;
