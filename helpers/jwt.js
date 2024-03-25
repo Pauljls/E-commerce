@@ -23,6 +23,7 @@ function authJwt(req, res, next) {
             //2.USAREMOS EXPERSIONES REGUALRES DEBIDO A QUE EL METODO ANTERIOR
             //SOLO NOS DARA COBERETURA PARA PRODUCTS Y NOSOTROS USAREMOS MAS FUNCIONES
             //EN PRODUCTS COMO /PORDUCTS/COUNT, /ID ,/FEATURED, ETC
+            {url: /\/public\/uploads(.*)/, methods: ['GET','OPTIONS']},
             {url: /\/api\/v1\/products(.*)/, methods: ['GET','OPTIONS']},
             {url: /\/api\/v1\/categories(.*)/, methods: ['GET','OPTIONS']}, 
             '/api/v1/users/login',
